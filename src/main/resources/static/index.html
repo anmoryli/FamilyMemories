@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>家时光 - 家庭回忆相册</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/all.min.css">
+    <script src="./js/jquery.min.js"></script>
+    <link rel="stylesheet" href="./css/icon.css">
+    <link rel="stylesheet" href="./css/css2.css">
+</head>
+<body>
+    <!-- 加载动画 -->
+    <div id="loading" class="loading-overlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+    </div>
+
+    <!-- 登录页面 -->
+    <div id="loginPage" class="page login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="material-icons">favorite</i> 家时光</h1>
+                <p>记录家庭美好时光</p>
+            </div>
+            <div class="login-form">
+                <div class="form-tabs">
+                    <button class="tab-btn active" data-tab="login">登录</button>
+                    <button class="tab-btn" data-tab="register">注册</button>
+                </div>
+                
+                <!-- 登录表单 -->
+                <form id="loginForm" class="tab-content active">
+                    <div class="form-group">
+                        <i class="material-icons">person</i>
+                        <input type="text" id="loginUsername" placeholder="用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="material-icons">lock</i>
+                        <input type="password" id="loginPassword" placeholder="密码" required>
+                    </div>
+                    <button type="submit" class="btn-primary">登录</button>
+                </form>
+
+                <!-- 注册表单 -->
+                <form id="registerForm" class="tab-content">
+                    <div class="form-group">
+                        <i class="material-icons">person</i>
+                        <input type="text" id="registerUsername" placeholder="用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="material-icons">email</i>
+                        <input type="email" id="registerEmail" placeholder="邮箱" required>
+                    </div>
+                    <div class="form-group">
+                        <i class="material-icons">lock</i>
+                        <input type="password" id="registerPassword" placeholder="密码" required>
+                    </div>
+                    <button type="submit" class="btn-primary">注册</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用页面 - 桌面端布局 -->
+    <div id="mainApp" class="main-app" style="display: none;">
+        <!-- 左侧导航栏 -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand">
+                    <i class="material-icons">favorite</i>
+                    <span>家时光</span>
+                </div>
+            </div>
+            
+            <div class="sidebar-menu">
+                <a href="#" class="menu-item active" data-page="photos">
+                    <i class="material-icons">photo_library</i>
+                    <span>我的照片</span>
+                </a>
+                <a href="#" class="menu-item" data-page="timeline">
+                    <i class="material-icons">timeline</i>
+                    <span>时间线</span>
+                </a>
+                <a href="#" class="menu-item" data-page="calendar">
+                    <i class="material-icons">calendar_today</i>
+                    <span>日历视图</span>
+                </a>
+                <a href="#" class="menu-item" data-page="family">
+                    <i class="material-icons">family_restroom</i>
+                    <span>家庭管理</span>
+                </a>
+                <a href="#" class="menu-item" data-page="chat">
+                    <i class="material-icons">chat</i>
+                    <span>AI助手</span>
+                </a>
+                <div class="menu-divider"></div>
+                <a href="#" class="menu-item" id="themeToggle">
+                    <i class="material-icons">dark_mode</i>
+                    <span>深色模式</span>
+                </a>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="material-icons">person</i>
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name" id="currentUser">用户</div>
+                        <div class="user-name" id="currentUserId">用户Id</div>
+                        <div class="user-name" id="currentUserEmail">用户邮箱</div>
+                        <div class="user-role">家庭成员</div>
+                    </div>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="material-icons">logout</i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部搜索栏 -->
+            <div class="top-bar">
+                <div class="search-section">
+                    <div class="search-box">
+                        <i class="material-icons">search</i>
+                        <input type="text" id="searchInput" placeholder="搜索照片、标签、地点...">
+                        <button id="searchBtn" class="search-btn">搜索</button>
+                    </div>
+                    <div class="search-filters">
+                        <select id="searchType">
+                            <option value="all">全部</option>
+                            <option value="title">标题</option>
+                            <option value="tag">标签</option>
+                            <option value="location">地点</option>
+                        </select>
+                        <input type="date" id="searchDateFrom">
+                        <input type="date" id="searchDateTo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 内容页面 -->
+            <div class="content-area">
+                <!-- 照片页面 -->
+                <div id="photosPage" class="content-page active">
+                    <div class="page-header">
+                        <h1>我的照片</h1>
+                        <div class="page-actions">
+                            <button id="uploadBtn" class="btn btn-primary">
+                                <i class="material-icons">upload</i>
+                                上传照片
+                            </button>
+                            <button id="selectAllBtn" class="btn btn-secondary">
+                                <i class="material-icons">check_box</i>
+                                全选
+                            </button>
+                            <button id="exportBtn" class="btn btn-secondary" style="display: none;">
+                                <i class="material-icons">download</i>
+                                导出选中
+                            </button>
+                        </div>
+                    </div>
+                    <div id="photosGrid" class="photos-grid">
+                        <!-- 照片将在这里动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 时间线页面 -->
+                <div id="timelinePage" class="content-page">
+                    <div class="page-header">
+                        <h1>家庭时间线</h1>
+                        <div class="page-actions">
+                            <button id="addMilestoneBtn" class="btn btn-primary">
+                                <i class="material-icons">add</i>
+                                添加里程碑
+                            </button>
+                        </div>
+                    </div>
+                    <div id="timeline" class="timeline-container">
+                        <!-- 时间线内容将在这里动态加载 -->
+                    </div>
+                </div>
+
+                <!-- 日历页面 -->
+                <div id="calendarPage" class="content-page">
+                    <div class="page-header">
+                        <h1>日历视图</h1>
+                        <div class="calendar-controls">
+                            <button id="prevMonth" class="btn btn-secondary">
+                                <i class="material-icons">chevron_left</i>
+                            </button>
+                            <span id="currentMonth" class="current-month"></span>
+                            <button id="nextMonth" class="btn btn-secondary">
+                                <i class="material-icons">chevron_right</i>
+                            </button>
+                        </div>
+                    </div>
+                    <div id="calendar" class="calendar-container">
+                        <!-- 日历将在这里动态生成 -->
+                    </div>
+                    <div class="calendar-controls">
+                        <span id="calendarMonth" class="current-month"></span>
+                    </div>
+                </div>
+
+                <!-- 家庭管理页面 -->
+                <div id="familyPage" class="content-page">
+                    <div class="page-header">
+                        <h1>家庭管理</h1>
+                        <div class="page-actions">
+                            <button id="createFamilyBtn" class="btn btn-primary">
+                                <i class="material-icons">add</i>
+                                创建家庭
+                            </button>
+                            <button id="inviteMemberBtn" class="btn btn-secondary">
+                                <i class="material-icons">person_add</i>
+                                邀请成员
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 家庭信息卡片 -->
+                    <div class="family-info-card">
+                        <div class="family-header">
+                            <div class="family-avatar">
+                                <i class="material-icons">home</i>
+                            </div>
+                            <div class="family-details">
+                                <h2 id="familyName">我的家庭</h2>
+                                <p id="familyDescription">温馨的家庭</p>
+                                <div class="family-stats">
+                                    <span class="stat">
+                                        <i class="material-icons">group</i>
+                                        <span id="memberCount">0</span> 成员
+                                    </span>
+                                    <span class="stat">
+                                        <i class="material-icons">image</i>
+                                        <span id="photoCount">0</span> 照片
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 家庭成员列表 -->
+                    <div class="members-section">
+                        <h3>家庭成员</h3>
+                        <div id="membersList" class="members-grid">
+                            <!-- 成员卡片将在这里动态加载 -->
+                        </div>
+                    </div>
+
+                    <!-- 邀请管理 -->
+                    <div class="invitations-section">
+                        <h3>邀请管理</h3>
+                        <div id="invitationsList" class="invitations-list">
+                            <!-- 邀请列表将在这里动态加载 -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI聊天页面 -->
+                <div id="chatPage" class="content-page">
+                    <div class="page-header">
+                        <h1>AI助手</h1>
+                    </div>
+                    <div class="chat-container">
+                        <div id="chatMessages" class="chat-messages">
+                            <div class="chat-message bot">
+                                <div class="message-avatar">
+                                    <i class="material-icons">android</i>
+                                </div>
+                                <div class="message-content">
+                                    <p>您好！我是您的AI助手，可以帮您管理照片和回答问题。</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <input type="text" id="chatInput" placeholder="输入消息...">
+                            <button id="sendChatBtn" class="send-btn">
+                                <i class="material-icons">send</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 模态框 -->
+    <!-- 照片上传模态框 -->
+    <div id="uploadModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>上传照片</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="uploadForm" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>选择照片</label>
+                        <input type="file" id="photoFile" accept="image/*" multiple required>
+                    </div>
+                    <div class="form-group">
+                        <label>标题</label>
+                        <input type="text" id="photoTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea id="photoDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>拍摄时间</label>
+                            <input type="datetime-local" id="photoTakeTime">
+                        </div>
+                        <div class="form-group">
+                            <label>拍摄地点</label>
+                            <input type="text" id="photoTakeAt">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>相机参数</label>
+                        <input type="text" id="photoCameraParameters" placeholder="相机型号、光圈、快门等">
+                    </div>
+                    <div class="form-group">
+                        <label>标签</label>
+                        <input type="text" id="photoTag" placeholder="用逗号分隔多个标签">
+                    </div>
+                    <div class="form-group">
+                        <label>相关人物</label>
+                        <div id="familyMembersList" class="members-checkbox">
+                            <!-- 家庭成员列表将在这里动态加载 -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">上传</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 照片详情模态框 -->
+    <div id="photoModal" class="modal photo-modal">
+        <div class="modal-content photo-modal-content">
+            <div class="modal-header">
+                <div class="photo-info">
+                    <h3 id="photoModalTitle"></h3>
+                    <p id="photoModalDate"></p>
+                </div>
+                <div class="photo-actions">
+                    <button id="downloadPhotoBtn" class="btn-icon" title="下载">
+                        <i class="material-icons">download</i>
+                    </button>
+                    <button id="editPhotoBtn" class="btn-icon" title="编辑">
+                        <i class="material-icons">edit</i>
+                    </button>
+                    <button id="deletePhotoBtn" class="btn-icon" title="删除">
+                        <i class="material-icons">delete</i>
+                    </button>
+                    <button class="modal-close">&times;</button>
+                </div>
+            </div>
+            <div class="photo-modal-body">
+                <div class="photo-display">
+                    <img id="photoModalImage" src="/placeholder.svg" alt="">
+                </div>
+                <div class="photo-details">
+                    <div class="photo-meta">
+                        <p><strong>描述：</strong><span id="photoModalDescription"></span></p>
+                        <p><strong>地点：</strong><span id="photoModalLocation"></span></p>
+                        <p><strong>标签：</strong><span id="photoModalTags"></span></p>
+                        <p><strong>相机参数：</strong><span id="photoModalCamera"></span></p>
+                    </div>
+                    <div class="photo-comments">
+                        <h4>评论</h4>
+                        <div id="photoComments" class="comments-list">
+                            <!-- 评论将在这里动态加载 -->
+                        </div>
+                        <div class="comment-form">
+                            <textarea id="commentInput" placeholder="添加评论..." rows="3"></textarea>
+                            <button id="addCommentBtn" class="btn btn-primary">发表评论</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 里程碑模态框 -->
+    <div id="milestoneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>添加里程碑</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="milestoneForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>标题</label>
+                        <input type="text" id="milestoneTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea id="milestoneDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>事件日期</label>
+                        <input type="date" id="milestoneEventDate" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">添加</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 家庭创建模态框 -->
+    <div id="familyModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>创建家庭</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="familyForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>家庭名称</label>
+                        <input type="text" id="createFamilyName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>家庭描述</label>
+                        <textarea id="createFamilyDescription" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">创建</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 邀请成员模态框 -->
+    <div id="inviteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>邀请成员</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="inviteForm">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>被邀请者用户ID</label>
+                        <input type="number" id="inviteeId" required>
+                        <small>请输入要邀请的用户ID</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">发送邀请</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑照片模态框 -->
+    <div id="editPhotoModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>编辑照片</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="editPhotoForm">
+                <div class="modal-body">
+                    <input type="hidden" id="editPhotoId">
+                    <div class="form-group">
+                        <label>标题</label>
+                        <input type="text" id="editPhotoTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>描述</label>
+                        <textarea id="editPhotoDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>拍摄时间</label>
+                            <input type="date" id="editPhotoTakeTime">
+                        </div>
+                        <div class="form-group">
+                            <label>拍摄地点</label>
+                            <input type="text" id="editPhotoTakeAt">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>相机参数</label>
+                        <input type="text" id="editPhotoCameraParameters">
+                    </div>
+                    <div class="form-group">
+                        <label>标签</label>
+                        <input type="text" id="editPhotoTag" placeholder="用逗号分隔多个标签">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-cancel">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 消息提示 -->
+    <div id="toast" class="toast">
+        <div class="toast-content">
+            <span id="toastMessage"></span>
+        </div>
+    </div>
+
+    <!-- 消息提示容器 -->
+    <div id="toastContainer" style="position: fixed; top: 20px; right: 20px; z-index: 10000;"></div>
+
+    <script src="./js/script.js"></script>
+</body>
+</html>
