@@ -50,6 +50,24 @@ public class CommentController {
         }
     }
 
+    @RequestMapping("/getUsernameByCommentId")
+    public String getUsernameByCommentId(@RequestParam int commentId) {
+        Comments comment = commentsService.getComment(commentId);
+        if (comment == null) {
+            log.error("获取用户名失败：评论ID={}不存在", commentId);
+            return null;
+        }
+
+        String username = commentsService.getUserByCommentId(commentId);
+        if (username == null) {
+            log.error("获取用户名失败：评论ID={}对应的用户不存在", commentId);
+            return null;
+        }
+
+        log.info("获取用户名成功：评论ID={}, 用户名={}", commentId, username);
+        return username;
+    }
+
     /**
      * 删除评论
      */

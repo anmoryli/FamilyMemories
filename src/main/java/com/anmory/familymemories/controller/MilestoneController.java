@@ -10,10 +10,7 @@ package com.anmory.familymemories.controller;
 import com.anmory.familymemories.model.Milestones;
 import com.anmory.familymemories.model.Photos;
 import com.anmory.familymemories.model.UserInfo;
-import com.anmory.familymemories.service.MilestonesService;
-import com.anmory.familymemories.service.PhotoMilestonesService;
-import com.anmory.familymemories.service.PhotosService;
-import com.anmory.familymemories.service.UserInfoService;
+import com.anmory.familymemories.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -37,6 +35,8 @@ public class MilestoneController {
     private PhotoMilestonesService photoMilestonesService;
     @Autowired
     private UserInfoService userInfoService;
+    @Autowired
+    ToolService toolService;
 
     /**
      * 创建里程碑
@@ -45,9 +45,10 @@ public class MilestoneController {
     public int createMilestone(@RequestParam int familyId,
                                @RequestParam String title,
                                @RequestParam String description,
-                               @RequestParam java.util.Date eventDate,
+                               @RequestParam String eventDate,
                                HttpServletRequest request,
                                @RequestParam(required = false) Integer userIdn) {
+        Date eventDateFinal = toolService.stringToDate(eventDate);
         // 校验用户权限（可选）
         int currentUserId = resolveUserId(request, userIdn);
         if (currentUserId <= 0) {
@@ -56,7 +57,7 @@ public class MilestoneController {
         }
 
         // 创建里程碑
-        int milestoneId = milestonesService.createMilestone(familyId, title, description, eventDate);
+        int milestoneId = milestonesService.createMilestone(familyId, title, description, eventDateFinal);
         if (milestoneId > 0) {
             log.info("里程碑创建成功：ID={}, 家庭ID={}", milestoneId, familyId);
             return milestoneId;

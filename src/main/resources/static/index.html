@@ -37,10 +37,12 @@
                     <div class="form-group">
                         <i class="material-icons">person</i>
                         <input type="text" id="loginUsername" placeholder="用户名" required>
+                        <small class="field-hint">必填</small>
                     </div>
                     <div class="form-group">
                         <i class="material-icons">lock</i>
                         <input type="password" id="loginPassword" placeholder="密码" required>
+                        <small class="field-hint">必填</small>
                     </div>
                     <button type="submit" class="btn-primary">登录</button>
                 </form>
@@ -50,14 +52,17 @@
                     <div class="form-group">
                         <i class="material-icons">person</i>
                         <input type="text" id="registerUsername" placeholder="用户名" required>
+                        <small class="field-hint">必填 - 用于登录的唯一标识</small>
                     </div>
                     <div class="form-group">
                         <i class="material-icons">email</i>
-                        <input type="email" id="registerEmail" placeholder="邮箱" required>
+                        <input type="email" id="registerEmail" placeholder="邮箱">
+                        <small class="field-hint">可选 - 用于找回密码和接收通知</small>
                     </div>
                     <div class="form-group">
                         <i class="material-icons">lock</i>
                         <input type="password" id="registerPassword" placeholder="密码" required>
+                        <small class="field-hint">必填 - 建议使用8位以上复杂密码</small>
                     </div>
                     <button type="submit" class="btn-primary">注册</button>
                 </form>
@@ -65,10 +70,72 @@
         </div>
     </div>
 
-    <!-- 主应用页面 - 桌面端布局 -->
+    <!-- 移动端底部导航 -->
+    <nav class="mobile-nav">
+        <a href="#" class="mobile-nav-item active" data-page="photos">
+            <i class="material-icons">photo_library</i>
+            <span>照片</span>
+        </a>
+        <!-- <a href="#" class="mobile-nav-item" data-page="timeline">
+            <i class="material-icons">timeline</i>
+            <span>时间线</span>
+        </a> -->
+        <a href="#" class="mobile-nav-item" data-page="calendar">
+            <i class="material-icons">calendar_today</i>
+            <span>日历</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="family">
+            <i class="material-icons">family_restroom</i>
+            <span>家庭</span>
+        </a>
+        <a href="#" class="mobile-nav-item" data-page="chat">
+            <i class="material-icons">chat</i>
+            <span>AI助手</span>
+        </a>
+    </nav>
+
+    <!-- 移动端顶部栏 -->
+    <header class="mobile-header">
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="material-icons">menu</i>
+        </button>
+        <h1 class="mobile-title">家时光</h1>
+        <button class="mobile-user-btn" id="mobileUserBtn">
+            <i class="material-icons">person</i>
+        </button>
+    </header>
+
+    <!-- 移动端侧边栏 -->
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <div class="mobile-sidebar-header">
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-name" id="mobileCurrentUser">用户</div>
+                    <div class="user-id" id="mobileCurrentUserId">ID: 加载中...</div>
+                    <div class="user-email" id="mobileCurrentUserEmail">邮箱: 加载中...</div>
+                    <div class="user-role">家庭成员</div>
+                </div>
+            </div>
+            <button class="mobile-sidebar-close" id="mobileSidebarClose">
+                <i class="material-icons">close</i>
+            </button>
+        </div>
+        <div class="mobile-sidebar-menu">
+            <a href="#" class="mobile-menu-item" id="mobileThemeToggle">
+                <i class="material-icons">dark_mode</i>
+                <span>深色模式</span>
+            </a>
+            <a href="#" class="mobile-menu-item" id="mobileLogoutBtn">
+                <i class="material-icons">logout</i>
+                <span>退出登录</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- 主应用页面 -->
     <div id="mainApp" class="main-app" style="display: none;">
-        <!-- 左侧导航栏 -->
-        <nav class="sidebar">
+        <!-- 左侧导航栏 (桌面端) -->
+        <nav class="sidebar desktop-only">
             <div class="sidebar-header">
                 <div class="brand">
                     <i class="material-icons">favorite</i>
@@ -81,10 +148,10 @@
                     <i class="material-icons">photo_library</i>
                     <span>我的照片</span>
                 </a>
-                <a href="#" class="menu-item" data-page="timeline">
+                <!-- <a href="#" class="menu-item" data-page="timeline">
                     <i class="material-icons">timeline</i>
                     <span>时间线</span>
-                </a>
+                </a> -->
                 <a href="#" class="menu-item" data-page="calendar">
                     <i class="material-icons">calendar_today</i>
                     <span>日历视图</span>
@@ -111,8 +178,8 @@
                     </div>
                     <div class="user-info">
                         <div class="user-name" id="currentUser">用户</div>
-                        <div class="user-name" id="currentUserId">用户Id</div>
-                        <div class="user-name" id="currentUserEmail">用户邮箱</div>
+                        <div class="user-id" id="currentUserId">用户Id</div>
+                        <div class="user-email" id="currentUserEmail">用户邮箱</div>
                         <div class="user-role">家庭成员</div>
                     </div>
                     <button id="logoutBtn" class="logout-btn">
@@ -125,7 +192,7 @@
         <!-- 主内容区域 -->
         <main class="main-content">
             <!-- 顶部搜索栏 -->
-            <div class="top-bar">
+            <div class="top-bar desktop-only">
                 <div class="search-section">
                     <div class="search-box">
                         <i class="material-icons">search</i>
@@ -145,24 +212,35 @@
                 </div>
             </div>
 
+            <!-- 移动端搜索栏 -->
+            <div class="mobile-search-bar mobile-only">
+                <div class="search-box">
+                    <i class="material-icons">search</i>
+                    <input type="text" id="mobileSearchInput" placeholder="搜索...">
+                    <button id="mobileSearchBtn" class="search-btn">
+                        <i class="material-icons">search</i>
+                    </button>
+                </div>
+            </div>
+
             <!-- 内容页面 -->
             <div class="content-area">
                 <!-- 照片页面 -->
                 <div id="photosPage" class="content-page active">
                     <div class="page-header">
-                        <h1>我的照片</h1>
+                        <h1 class="desktop-only">我的照片</h1>
                         <div class="page-actions">
                             <button id="uploadBtn" class="btn btn-primary">
                                 <i class="material-icons">upload</i>
-                                上传照片
+                                <span class="desktop-only">上传照片</span>
                             </button>
                             <button id="selectAllBtn" class="btn btn-secondary">
                                 <i class="material-icons">check_box</i>
-                                全选
+                                <span class="desktop-only">全选</span>
                             </button>
                             <button id="exportBtn" class="btn btn-secondary" style="display: none;">
                                 <i class="material-icons">download</i>
-                                导出选中
+                                <span class="desktop-only">导出选中</span>
                             </button>
                         </div>
                     </div>
@@ -172,25 +250,24 @@
                 </div>
 
                 <!-- 时间线页面 -->
-                <div id="timelinePage" class="content-page">
+                <!-- <div id="timelinePage" class="content-page">
                     <div class="page-header">
-                        <h1>家庭时间线</h1>
+                        <h1 class="desktop-only">家庭时间线</h1>
                         <div class="page-actions">
                             <button id="addMilestoneBtn" class="btn btn-primary">
                                 <i class="material-icons">add</i>
-                                添加里程碑
+                                <span class="desktop-only">添加里程碑</span>
                             </button>
                         </div>
                     </div>
                     <div id="timeline" class="timeline-container">
-                        <!-- 时间线内容将在这里动态加载 -->
                     </div>
-                </div>
+                </div> -->
 
                 <!-- 日历页面 -->
                 <div id="calendarPage" class="content-page">
                     <div class="page-header">
-                        <h1>日历视图</h1>
+                        <h1 class="desktop-only">日历视图</h1>
                         <div class="calendar-controls">
                             <button id="prevMonth" class="btn btn-secondary">
                                 <i class="material-icons">chevron_left</i>
@@ -212,15 +289,15 @@
                 <!-- 家庭管理页面 -->
                 <div id="familyPage" class="content-page">
                     <div class="page-header">
-                        <h1>家庭管理</h1>
+                        <h1 class="desktop-only">家庭管理</h1>
                         <div class="page-actions">
                             <button id="createFamilyBtn" class="btn btn-primary">
                                 <i class="material-icons">add</i>
-                                创建家庭
+                                <span class="desktop-only">创建家庭</span>
                             </button>
                             <button id="inviteMemberBtn" class="btn btn-secondary">
                                 <i class="material-icons">person_add</i>
-                                邀请成员
+                                <span class="desktop-only">邀请成员</span>
                             </button>
                         </div>
                     </div>
@@ -268,7 +345,7 @@
                 <!-- AI聊天页面 -->
                 <div id="chatPage" class="content-page">
                     <div class="page-header">
-                        <h1>AI助手</h1>
+                        <h1 class="desktop-only">AI助手</h1>
                     </div>
                     <div class="chat-container">
                         <div id="chatMessages" class="chat-messages">
@@ -299,21 +376,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>上传照片</h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close mobile-close-btn">
+                    <i class="material-icons">close</i>
+                </button>
             </div>
             <form id="uploadForm" enctype="multipart/form-data">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>选择照片</label>
                         <input type="file" id="photoFile" accept="image/*" multiple required>
+                        <small class="field-hint">必填 - 支持JPG、PNG等格式，可选择多张</small>
                     </div>
                     <div class="form-group">
                         <label>标题</label>
                         <input type="text" id="photoTitle" required>
+                        <small class="field-hint">必填 - 为照片起个有意义的名字</small>
                     </div>
                     <div class="form-group">
                         <label>描述</label>
                         <textarea id="photoDescription" rows="3"></textarea>
+                        <small class="field-hint">可选 - 记录照片背后的故事</small>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -356,7 +438,7 @@
                     <h3 id="photoModalTitle"></h3>
                     <p id="photoModalDate"></p>
                 </div>
-                <div class="photo-actions">
+                <!-- <div class="photo-actions">
                     <button id="downloadPhotoBtn" class="btn-icon" title="下载">
                         <i class="material-icons">download</i>
                     </button>
@@ -366,6 +448,18 @@
                     <button id="deletePhotoBtn" class="btn-icon" title="删除">
                         <i class="material-icons">delete</i>
                     </button>
+                    <button class="modal-close">&times;</button>
+                </div> -->
+                <div class="photo-actions">
+                    <!-- <button id="downloadPhotoBtn" class="btn-icon2" title="下载">
+                        <i class="material-icons">download</i>
+                    </button>
+                    <button id="editPhotoBtn" class="btn-icon2" title="编辑">
+                        <i class="material-icons">edit</i>
+                    </button>
+                    <button id="deletePhotoBtn" class="btn-icon2" title="删除">
+                        <i class="material-icons">delete</i>
+                    </button> -->
                     <button class="modal-close">&times;</button>
                 </div>
             </div>
@@ -400,21 +494,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>添加里程碑</h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close mobile-close-btn">
+                    <i class="material-icons">close</i>
+                </button>
             </div>
             <form id="milestoneForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>标题</label>
                         <input type="text" id="milestoneTitle" required>
+                        <small class="field-hint">必填 - 例如：宝宝出生、结婚纪念日</small>
                     </div>
                     <div class="form-group">
                         <label>描述</label>
-                        <textarea id="milestoneDescription" rows="3" required></textarea>
+                        <textarea id="milestoneDescription" rows="3"></textarea>
+                        <small class="field-hint">可选 - 详细描述这个重要时刻</small>
                     </div>
                     <div class="form-group">
                         <label>事件日期</label>
                         <input type="date" id="milestoneEventDate" required>
+                        <small class="field-hint">必填 - 选择事件发生的日期</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -430,17 +529,21 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>创建家庭</h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close mobile-close-btn">
+                    <i class="material-icons">close</i>
+                </button>
             </div>
             <form id="familyForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>家庭名称</label>
                         <input type="text" id="createFamilyName" required>
+                        <small class="field-hint">必填 - 例如：张家大院、幸福之家</small>
                     </div>
                     <div class="form-group">
                         <label>家庭描述</label>
                         <textarea id="createFamilyDescription" rows="3" required></textarea>
+                        <small class="field-hint">必填 - 简单介绍您的家庭</small>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -456,14 +559,17 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>邀请成员</h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close mobile-close-btn">
+                    <i class="material-icons">close</i>
+                </button>
             </div>
             <form id="inviteForm">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>被邀请者用户ID</label>
                         <input type="number" id="inviteeId" required>
-                        <small>请输入要邀请的用户ID</small>
+                        <small class="field-hint">必填 - 请输入要邀请的用户ID数字</small>
+                        <small class="field-help">💡 提示：可以让对方在个人中心查看自己的用户ID</small>
                     </div>
                 </div>
                 <div class="modal-footer">

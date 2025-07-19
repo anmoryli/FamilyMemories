@@ -22,7 +22,6 @@ public interface CommentsMapper {
      */
     @Insert("INSERT INTO comments (photo_id, user_id, content, created_at, updated_at) " +
             "VALUES (#{photoId}, #{userId}, #{content}, NOW(), NOW())")
-    @Options(useGeneratedKeys = true, keyProperty = "commentId")
     int insert(int photoId, int userId, String content);
 
     /**
@@ -48,4 +47,9 @@ public interface CommentsMapper {
      */
     @Select("SELECT * FROM comments WHERE photo_id = #{photoId}")
     List<Comments> selectByPhotoId(int photoId);
+
+    @Select("SELECT u.username FROM comments c " +
+            "JOIN user_info u ON c.user_id = u.user_id " +
+            "WHERE c.comment_id = #{commentId}")
+    String getUsernameByCommentId(int commentId);
 }

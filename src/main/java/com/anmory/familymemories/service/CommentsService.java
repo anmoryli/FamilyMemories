@@ -8,6 +8,7 @@ package com.anmory.familymemories.service;
 
 import com.anmory.familymemories.mapper.CommentsMapper;
 import com.anmory.familymemories.model.Comments;
+import com.anmory.familymemories.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +33,9 @@ public class CommentsService {
 
     public List<Comments> getCommentsByPhotoId(int photoId) {
         return commentsMapper.selectByPhotoId(photoId);
+    }
+
+    public String getUserByCommentId(int commentId) {
+        return commentsMapper.getUsernameByCommentId(commentId);
     }
 }

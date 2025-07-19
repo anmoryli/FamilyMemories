@@ -23,7 +23,6 @@ public interface MilestonesMapper {
      */
     @Insert("INSERT INTO milestones (family_id, title, description, event_date, created_at, updated_at) " +
             "VALUES (#{familyId}, #{title}, #{description}, #{eventDate}, NOW(), NOW())")
-    @Options(useGeneratedKeys = true, keyProperty = "milestoneId")
     int insert(int familyId, String title, String description, java.util.Date eventDate);
 
     /**
